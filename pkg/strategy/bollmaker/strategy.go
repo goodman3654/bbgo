@@ -4,16 +4,17 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"os"
 	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	indicatorv2 "github.com/c9s/bbgo/pkg/indicator/v2"
+	indicatorv2 "github.com/goodman3654/bbgo/pkg/indicator/v2"
 
-	"github.com/c9s/bbgo/pkg/bbgo"
-	"github.com/c9s/bbgo/pkg/fixedpoint"
-	"github.com/c9s/bbgo/pkg/types"
+	"github.com/goodman3654/bbgo/pkg/bbgo"
+	"github.com/goodman3654/bbgo/pkg/fixedpoint"
+	"github.com/goodman3654/bbgo/pkg/types"
 )
 
 // TODO:
@@ -167,6 +168,8 @@ type Strategy struct {
 	// persistence fields
 	Position    *types.Position    `json:"position,omitempty" persistence:"position"`
 	ProfitStats *types.ProfitStats `json:"profitStats,omitempty" persistence:"profit_stats"`
+
+	TradeStats  *types.TradeStats  `persistence:"trade_stats"`
 
 	session       *bbgo.ExchangeSession
 	book          *types.StreamOrderBook
@@ -565,6 +568,10 @@ func (s *Strategy) Run(ctx context.Context, orderExecutor bbgo.OrderExecutor, se
 		s.ProfitStats = types.NewProfitStats(s.Market)
 	}
 
+	if s.TradeStats == nil {
+		s.TradeStats = types.NewTradeStats(s.Symbol)
+	}
+	
 	// Always update the position fields
 	s.Position.Strategy = ID
 	s.Position.StrategyInstanceID = instanceID
@@ -572,6 +579,7 @@ func (s *Strategy) Run(ctx context.Context, orderExecutor bbgo.OrderExecutor, se
 	s.orderExecutor = bbgo.NewGeneralOrderExecutor(session, s.Symbol, ID, instanceID, s.Position)
 	s.orderExecutor.BindEnvironment(s.Environment)
 	s.orderExecutor.BindProfitStats(s.ProfitStats)
+	s.orderExecutor.BindTradeStats(s.TradeStats)
 	s.orderExecutor.Bind()
 	s.orderExecutor.TradeCollector().OnPositionUpdate(func(position *types.Position) {
 		bbgo.Sync(ctx, s)
