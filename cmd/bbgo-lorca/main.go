@@ -14,8 +14,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/c9s/bbgo/pkg/bbgo"
-	"github.com/c9s/bbgo/pkg/server"
+	"github.com/goodman3654/bbgo/pkg/bbgo"
+	"github.com/goodman3654/bbgo/pkg/server"
 )
 
 func main() {
