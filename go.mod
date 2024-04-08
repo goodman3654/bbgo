@@ -1,6 +1,6 @@
 // +heroku install ./cmd/bbgo
 
-module github.com/c9s/bbgo
+module github.com/goodman3654/bbgo
 
 go 1.21
 
