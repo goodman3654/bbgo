@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/c9s/bbgo/pkg/cmd"
+	"github.com/goodman3654/bbgo/pkg/cmd"
 )
 
 func main() {
